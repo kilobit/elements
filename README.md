@@ -54,7 +54,7 @@ under the terms of the LICENSE.
 Support
 -------
 
-Submit tickets through [github](https://github.com/kilobit/args).
+Submit tickets through [github](https://github.com/kilobit/elements).
 
 License
 -------
