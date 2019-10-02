@@ -3,6 +3,7 @@
 package elements
 
 import "html"
+import "strings"
 
 type value *string
 
@@ -42,6 +43,50 @@ func (el *Element) Attr(k string) (string, bool) {
 	}
 
 	return *v, ok
+}
+
+func (el *Element) SetID(id string) *Element {
+	el.SetAttr("id", id)
+	return el
+}
+
+func (el *Element) ID() string {
+	id, ok := el.Attr("id")
+	if !ok {
+		return ""
+	}
+
+	return id
+}
+
+func (el *Element) AddClass(class string) *Element {
+
+	cur, ok := el.Attr("class")
+	if !ok {
+		el.SetAttr("class", class)
+		return el
+	}
+
+	cur += " " + class
+
+	el.SetAttr("class", cur)
+	return el
+}
+
+func (el *Element) HasClass(class string) bool {
+
+	classes, ok := el.Attr("class")
+	if !ok {
+		return false
+	}
+
+	for _, c := range strings.Split(classes, " ") {
+		if strings.Index(c, class) != -1 {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (el *Element) AddChild(c Node) *Element {

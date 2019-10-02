@@ -17,9 +17,21 @@ func TestHTML5Doctype(t *testing.T) {
 
 func TestEmptyDocument(t *testing.T) {
 
-	doc := Document("Test Document")
+	doc := Document("Test Document", "en")
 
-	t.Log(doc.html)
+	t.Log(doc)
 
 	els.Expect(t, "Test Document", doc.html.head.tstr)
+}
+
+func TestElementBuilder(t *testing.T) {
+
+	section := Section().AddClass("top").
+		AddChild(P().AddClass("content")).
+		AddChild(HR())
+
+	t.Log(section)
+
+	els.Expect(t, true, section.HasClass("top"))
+	els.Expect(t, "hr", section.ChildN(1).(*els.Element).Tag())
 }
