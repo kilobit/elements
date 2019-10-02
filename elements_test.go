@@ -16,6 +16,8 @@ func TestElement(t *testing.T) {
 		AddAttr("tagged").
 		SetAttr("foo", "bar")
 
+	t.Log(el)
+	
 	Expect(t, "tag", el.Tag())
 
 	attr, ok := el.Attr("tagged")
@@ -33,6 +35,8 @@ func TestElementNested(t *testing.T) {
 		AddChild(NewElement("nav")).
 		AddChild(NewElement("main"))
 
+	t.Log(el)
+	
 	Expect(t, 2, len(el.Children()))
 }
 
@@ -43,6 +47,8 @@ func TestElementContent(t *testing.T) {
 	el := NewElement("p").
 		AddChild(c)
 
+	t.Log(el)
+	
 	Expect(t, c, el.ChildN(0))
 	Expect(t, 1, len(el.Children()))
 }

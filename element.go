@@ -1,8 +1,7 @@
 /* Copyright 2019 Kilobit Labs Inc. */
 
-package elements
+package elements // import "kilobit.ca/go/elements"
 
-import "html"
 import "strings"
 
 type value *string
@@ -13,12 +12,14 @@ type Element struct {
 	tag   string     // Tag name
 	attrs Attributes // Attributes
 	cs    []Node     // Children
+	fmt   Format     // Format
 }
 
 func NewElement(tag string) *Element {
 	return &Element{tag,
 		make(Attributes),
 		[]Node{},
+		defaultFormat,
 	}
 }
 
@@ -111,24 +112,29 @@ func (el *Element) String() string {
 	sattrs := ""
 	for k, v := range el.attrs {
 		if v == nil {
-			sattrs += " \"" + k + "\""
+			sattrs += el.fmt.AttrSep + el.fmt.AttrKFmt(k)
 		} else {
-			sattrs += " \"" + k + "\"" + "=" + "\"" + *v + "\""
+			sattrs += el.fmt.AttrSep + el.fmt.AttrKFmt(k) + "=" +
+				el.fmt.AttrVFmt(*v)
 		}
 	}
 
-	s := "<" + html.EscapeString(el.tag) + sattrs + ">"
+	s := el.fmt.Prefix + el.fmt.TagOpen + el.fmt.TagFmt(el.tag) + sattrs +
+		el.fmt.TagClose
 
 	// Single tag without children
-	if len(el.cs) == 0 {
+	if len(el.cs) == 0 && el.fmt.Close {
 		return s
 	}
 
+	s += el.fmt.AttrSep
+	
 	for _, c := range el.cs {
-		s += c.String()
+		s += el.fmt.CPrefix + c.String() + el.fmt.Sep
 	}
 
-	s += "</" + html.EscapeString(el.tag) + ">"
+	s += el.fmt.Prefix + el.fmt.EndTagOpen + el.fmt.TagFmt(el.tag) +
+		el.fmt.EndTagClose + el.fmt.Sep
 
 	return s
 }
