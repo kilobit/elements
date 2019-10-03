@@ -24,6 +24,21 @@ var html5Format els.Format = els.Format{
 	AttrVFmt:    func(s string) string { return els.QuoteString(html.EscapeString(s)) },
 }
 
+var closedFormat els.Format = els.Format{
+	Close:       true,
+	Sep:         "",
+	Prefix:      "",
+	CPrefix:     "",
+	TagFmt:      html.EscapeString,
+	TagOpen:     "<",
+	TagClose:    ">",
+	EndTagOpen:  "</",
+	EndTagClose: ">",
+	AttrSep:     " ",
+	AttrKFmt:    html.EscapeString,
+	AttrVFmt:    func(s string) string { return els.QuoteString(html.EscapeString(s)) },
+}
+
 type HTML5Document struct {
 	html *HTMLElement
 }
@@ -75,10 +90,6 @@ func HTML(title string, lang string) *HTMLElement {
 	return html
 }
 
-func (el *HTMLElement) String() string {
-	return el.FormattedString(&html5Format)
-}
-
 type HeadElement struct {
 	*els.Element
 	title *els.Element // Title of the document.
@@ -101,10 +112,6 @@ func Head(tstr string) *HeadElement {
 	return head
 }
 
-func (el *HeadElement) String() string {
-	return el.FormattedString(&html5Format)
-}
-
 type BodyElement struct {
 	*els.Element
 }
@@ -116,10 +123,6 @@ func Body() *BodyElement {
 	}
 
 	return body
-}
-
-func (el *BodyElement) String() string {
-	return el.FormattedString(&html5Format)
 }
 
 type AnchorElement struct {
@@ -142,151 +145,146 @@ func (el *AnchorElement) SetHref(href string) *AnchorElement {
 	return el
 }
 
-func (el *AnchorElement) String() string {
-	return el.FormattedString(&html5Format)
-}
-
 type HTML5Element struct {
 	*els.Element
 }
 
-func NewHTML5Element(tag string) *HTML5Element {
+func NewHTML5Element(tag string, opts... els.ElementOption) *HTML5Element {
 	return &HTML5Element{
-		els.NewElement(tag),
+		els.NewElement(tag, opts...),
 	}
-}
-
-func (el *HTML5Element) String() string {
-	return el.FormattedString(&html5Format)
 }
 
 type elementBuilder func() *HTML5Element
 
-func makeElementBuilder(tag string) elementBuilder {
+func makeElementBuilder(tag string, opts... els.ElementOption) elementBuilder {
 	return func() *HTML5Element {
-		return NewHTML5Element(tag)
+		return NewHTML5Element(tag, opts...)
 	}
 }
 
+var html5 = els.OptFormat(&html5Format)
+var closed = els.OptFormat(&closedFormat)
+
 // Meta Tags
-var Base elementBuilder = makeElementBuilder("base")
-var Link elementBuilder = makeElementBuilder("link")
-var Meta elementBuilder = makeElementBuilder("meta")
-var Style elementBuilder = makeElementBuilder("style")
-var Title elementBuilder = makeElementBuilder("title")
+var Base elementBuilder = makeElementBuilder("base", closed)
+var Link elementBuilder = makeElementBuilder("link", closed)
+var Meta elementBuilder = makeElementBuilder("meta", closed)
+var Style elementBuilder = makeElementBuilder("style", html5)
+var Title elementBuilder = makeElementBuilder("title", html5)
 
 // Structural Tags
-var Article elementBuilder = makeElementBuilder("article")
-var Aside elementBuilder = makeElementBuilder("aside")
-var BR elementBuilder = makeElementBuilder("br")
-var Details elementBuilder = makeElementBuilder("details")
-var Div elementBuilder = makeElementBuilder("div")
-var H1 elementBuilder = makeElementBuilder("h1")
-var H2 elementBuilder = makeElementBuilder("h2")
-var H3 elementBuilder = makeElementBuilder("h3")
-var H4 elementBuilder = makeElementBuilder("h4")
-var H5 elementBuilder = makeElementBuilder("h5")
-var H6 elementBuilder = makeElementBuilder("h6")
-var Header elementBuilder = makeElementBuilder("header")
-var HGroup elementBuilder = makeElementBuilder("hgroup")
-var HR elementBuilder = makeElementBuilder("hr")
-var Footer elementBuilder = makeElementBuilder("footer")
-var Nav elementBuilder = makeElementBuilder("nav")
-var P elementBuilder = makeElementBuilder("p")
-var Section elementBuilder = makeElementBuilder("section")
-var Span elementBuilder = makeElementBuilder("span")
-var Summary elementBuilder = makeElementBuilder("summary")
+var Article elementBuilder = makeElementBuilder("article", html5)
+var Aside elementBuilder = makeElementBuilder("aside", html5)
+var BR elementBuilder = makeElementBuilder("br", closed)
+var Details elementBuilder = makeElementBuilder("details", html5)
+var Div elementBuilder = makeElementBuilder("div", html5)
+var H1 elementBuilder = makeElementBuilder("h1", html5)
+var H2 elementBuilder = makeElementBuilder("h2", html5)
+var H3 elementBuilder = makeElementBuilder("h3", html5)
+var H4 elementBuilder = makeElementBuilder("h4", html5)
+var H5 elementBuilder = makeElementBuilder("h5", html5)
+var H6 elementBuilder = makeElementBuilder("h6", html5)
+var Header elementBuilder = makeElementBuilder("header", html5)
+var HGroup elementBuilder = makeElementBuilder("hgroup", html5)
+var HR elementBuilder = makeElementBuilder("hr", closed)
+var Footer elementBuilder = makeElementBuilder("footer", html5)
+var Nav elementBuilder = makeElementBuilder("nav", html5)
+var P elementBuilder = makeElementBuilder("p", html5)
+var Section elementBuilder = makeElementBuilder("section", html5)
+var Span elementBuilder = makeElementBuilder("span", html5)
+var Summary elementBuilder = makeElementBuilder("summary", html5)
 
 // Form Tags
-var Button elementBuilder = makeElementBuilder("button")
-var DataList elementBuilder = makeElementBuilder("datalist")
-var FieldSet elementBuilder = makeElementBuilder("fieldset")
-var Form elementBuilder = makeElementBuilder("form")
-var Input elementBuilder = makeElementBuilder("input")
-var Keygen elementBuilder = makeElementBuilder("keygen")
-var Label elementBuilder = makeElementBuilder("label")
-var Legend elementBuilder = makeElementBuilder("legend")
-var Meter elementBuilder = makeElementBuilder("meter")
-var OptGroup elementBuilder = makeElementBuilder("optgroup")
-var Option elementBuilder = makeElementBuilder("option")
-var Select elementBuilder = makeElementBuilder("select")
-var TextArea elementBuilder = makeElementBuilder("textarea")
+var Button elementBuilder = makeElementBuilder("button", html5)
+var DataList elementBuilder = makeElementBuilder("datalist", html5)
+var FieldSet elementBuilder = makeElementBuilder("fieldset", html5)
+var Form elementBuilder = makeElementBuilder("form", html5)
+var Input elementBuilder = makeElementBuilder("input", closed)
+var Keygen elementBuilder = makeElementBuilder("keygen", html5)
+var Label elementBuilder = makeElementBuilder("label", html5)
+var Legend elementBuilder = makeElementBuilder("legend", html5)
+var Meter elementBuilder = makeElementBuilder("meter", html5)
+var OptGroup elementBuilder = makeElementBuilder("optgroup", html5)
+var Option elementBuilder = makeElementBuilder("option", html5)
+var Select elementBuilder = makeElementBuilder("select", html5)
+var TextArea elementBuilder = makeElementBuilder("textarea", html5)
 
 // Formatting Tags
-var Abbr elementBuilder = makeElementBuilder("abbr")
-var Acronym elementBuilder = makeElementBuilder("acronym")
-var Address elementBuilder = makeElementBuilder("address")
-var B elementBuilder = makeElementBuilder("b")
-var Bdi elementBuilder = makeElementBuilder("bdi")
-var Bdo elementBuilder = makeElementBuilder("bdo")
-var Big elementBuilder = makeElementBuilder("big")
-var BlockQuote elementBuilder = makeElementBuilder("blockquote")
-var Cite elementBuilder = makeElementBuilder("cite")
-var Code elementBuilder = makeElementBuilder("code")
-var Del elementBuilder = makeElementBuilder("del")
-var Dfn elementBuilder = makeElementBuilder("dfn")
-var Em elementBuilder = makeElementBuilder("em")
-var I elementBuilder = makeElementBuilder("i")
-var Ins elementBuilder = makeElementBuilder("ins")
-var Kbd elementBuilder = makeElementBuilder("kbd")
-var Mark elementBuilder = makeElementBuilder("mark")
-var Output elementBuilder = makeElementBuilder("output")
-var Pre elementBuilder = makeElementBuilder("pre")
-var Progress elementBuilder = makeElementBuilder("progress")
-var Q elementBuilder = makeElementBuilder("q")
-var RP elementBuilder = makeElementBuilder("rp")
-var RT elementBuilder = makeElementBuilder("rt")
-var Ruby elementBuilder = makeElementBuilder("ruby")
-var Samp elementBuilder = makeElementBuilder("samp")
-var Small elementBuilder = makeElementBuilder("small")
-var Strong elementBuilder = makeElementBuilder("strong")
-var Sub elementBuilder = makeElementBuilder("sub")
-var Sup elementBuilder = makeElementBuilder("sup")
-var TT elementBuilder = makeElementBuilder("tt")
-var Var elementBuilder = makeElementBuilder("var")
-var WBR elementBuilder = makeElementBuilder("wbr")
+var Abbr elementBuilder = makeElementBuilder("abbr", html5)
+var Acronym elementBuilder = makeElementBuilder("acronym", html5)
+var Address elementBuilder = makeElementBuilder("address", html5)
+var B elementBuilder = makeElementBuilder("b", html5)
+var Bdi elementBuilder = makeElementBuilder("bdi", html5)
+var Bdo elementBuilder = makeElementBuilder("bdo", html5)
+var Big elementBuilder = makeElementBuilder("big", html5)
+var BlockQuote elementBuilder = makeElementBuilder("blockquote", html5)
+var Cite elementBuilder = makeElementBuilder("cite", html5)
+var Code elementBuilder = makeElementBuilder("code", html5)
+var Del elementBuilder = makeElementBuilder("del", html5)
+var Dfn elementBuilder = makeElementBuilder("dfn", html5)
+var Em elementBuilder = makeElementBuilder("em", html5)
+var I elementBuilder = makeElementBuilder("i", html5)
+var Ins elementBuilder = makeElementBuilder("ins", html5)
+var Kbd elementBuilder = makeElementBuilder("kbd", html5)
+var Mark elementBuilder = makeElementBuilder("mark", html5)
+var Output elementBuilder = makeElementBuilder("output", html5)
+var Pre elementBuilder = makeElementBuilder("pre", html5)
+var Progress elementBuilder = makeElementBuilder("progress", html5)
+var Q elementBuilder = makeElementBuilder("q", html5)
+var RP elementBuilder = makeElementBuilder("rp", html5)
+var RT elementBuilder = makeElementBuilder("rt", html5)
+var Ruby elementBuilder = makeElementBuilder("ruby", html5)
+var Samp elementBuilder = makeElementBuilder("samp", html5)
+var Small elementBuilder = makeElementBuilder("small", html5)
+var Strong elementBuilder = makeElementBuilder("strong", html5)
+var Sub elementBuilder = makeElementBuilder("sub", html5)
+var Sup elementBuilder = makeElementBuilder("sup", html5)
+var TT elementBuilder = makeElementBuilder("tt", html5)
+var Var elementBuilder = makeElementBuilder("var", html5)
+var WBR elementBuilder = makeElementBuilder("wbr", html5)
 
 // List Tags
-var DD elementBuilder = makeElementBuilder("dd")
-var Dir elementBuilder = makeElementBuilder("dir")
-var DL elementBuilder = makeElementBuilder("dl")
-var DT elementBuilder = makeElementBuilder("dt")
-var LI elementBuilder = makeElementBuilder("li")
-var OL elementBuilder = makeElementBuilder("ol")
-var Menu elementBuilder = makeElementBuilder("menu")
-var UL elementBuilder = makeElementBuilder("ul")
+var DD elementBuilder = makeElementBuilder("dd", html5)
+var Dir elementBuilder = makeElementBuilder("dir", html5)
+var DL elementBuilder = makeElementBuilder("dl", html5)
+var DT elementBuilder = makeElementBuilder("dt", html5)
+var LI elementBuilder = makeElementBuilder("li", html5)
+var OL elementBuilder = makeElementBuilder("ol", html5)
+var Menu elementBuilder = makeElementBuilder("menu", html5)
+var UL elementBuilder = makeElementBuilder("ul", html5)
 
 // Table Tags
-var Caption elementBuilder = makeElementBuilder("caption")
-var Col elementBuilder = makeElementBuilder("col")
-var Colgroup elementBuilder = makeElementBuilder("colgroup")
-var Table elementBuilder = makeElementBuilder("table")
-var TBody elementBuilder = makeElementBuilder("tbody")
-var TD elementBuilder = makeElementBuilder("td")
-var TFoot elementBuilder = makeElementBuilder("tfoot")
-var THead elementBuilder = makeElementBuilder("thead")
-var TH elementBuilder = makeElementBuilder("th")
-var TR elementBuilder = makeElementBuilder("tr")
+var Caption elementBuilder = makeElementBuilder("caption", html5)
+var Col elementBuilder = makeElementBuilder("col", html5)
+var Colgroup elementBuilder = makeElementBuilder("colgroup", html5)
+var Table elementBuilder = makeElementBuilder("table", html5)
+var TBody elementBuilder = makeElementBuilder("tbody", html5)
+var TD elementBuilder = makeElementBuilder("td", html5)
+var TFoot elementBuilder = makeElementBuilder("tfoot", html5)
+var THead elementBuilder = makeElementBuilder("thead", html5)
+var TH elementBuilder = makeElementBuilder("th", html5)
+var TR elementBuilder = makeElementBuilder("tr", html5)
 
 // Scripting Tags
-var NoScript elementBuilder = makeElementBuilder("noscript")
-var Script elementBuilder = makeElementBuilder("script")
+var NoScript elementBuilder = makeElementBuilder("noscript", html5)
+var Script elementBuilder = makeElementBuilder("script", html5)
 
 // Embedded Content Tags
-var Area elementBuilder = makeElementBuilder("area")
-var Audio elementBuilder = makeElementBuilder("audio")
-var Canvas elementBuilder = makeElementBuilder("canvas")
-var Embed elementBuilder = makeElementBuilder("embed")
-var FigCaption elementBuilder = makeElementBuilder("figcaption")
-var Figure elementBuilder = makeElementBuilder("figure")
-var Frame elementBuilder = makeElementBuilder("frame")
-var FrameSet elementBuilder = makeElementBuilder("frameset")
-var IFrame elementBuilder = makeElementBuilder("iframe")
-var Img elementBuilder = makeElementBuilder("img")
-var Map elementBuilder = makeElementBuilder("map")
-var NoFrames elementBuilder = makeElementBuilder("noframes")
-var Object elementBuilder = makeElementBuilder("object")
-var Param elementBuilder = makeElementBuilder("param")
-var Source elementBuilder = makeElementBuilder("source")
-var Time elementBuilder = makeElementBuilder("time")
-var Video elementBuilder = makeElementBuilder("video")
+var Area elementBuilder = makeElementBuilder("area", html5)
+var Audio elementBuilder = makeElementBuilder("audio", html5)
+var Canvas elementBuilder = makeElementBuilder("canvas", html5)
+var Embed elementBuilder = makeElementBuilder("embed", html5)
+var FigCaption elementBuilder = makeElementBuilder("figcaption", html5)
+var Figure elementBuilder = makeElementBuilder("figure", html5)
+var Frame elementBuilder = makeElementBuilder("frame", html5)
+var FrameSet elementBuilder = makeElementBuilder("frameset", html5)
+var IFrame elementBuilder = makeElementBuilder("iframe", html5)
+var Img elementBuilder = makeElementBuilder("img", closed)
+var Map elementBuilder = makeElementBuilder("map", html5)
+var NoFrames elementBuilder = makeElementBuilder("noframes", html5)
+var Object elementBuilder = makeElementBuilder("object", html5)
+var Param elementBuilder = makeElementBuilder("param", html5)
+var Source elementBuilder = makeElementBuilder("source", html5)
+var Time elementBuilder = makeElementBuilder("time", html5)
+var Video elementBuilder = makeElementBuilder("video", html5)

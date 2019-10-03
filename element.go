@@ -6,6 +6,8 @@ import "strings"
 
 type value *string
 
+type ElementOption func(el *Element)
+
 type Attributes map[string]value
 
 type Element struct {
@@ -15,12 +17,18 @@ type Element struct {
 	fmt   *Format    // Format
 }
 
-func NewElement(tag string) *Element {
-	return &Element{tag,
+func NewElement(tag string, opts... ElementOption) *Element {
+	el := &Element{tag,
 		make(Attributes),
 		[]Node{},
 		&defaultFormat,
 	}
+
+	for _, opt := range opts {
+		opt(el)
+	}
+
+	return el
 }
 
 func (el *Element) Tag() string {
@@ -115,7 +123,7 @@ func (el *Element) Format() *Format {
 	return el.fmt
 }
 
-func (el *Element) FormattedString(fmt *Format) string {
+func (el *Element) String() string {
 
 	sattrs := ""
 	for k, v := range el.attrs {
@@ -147,6 +155,8 @@ func (el *Element) FormattedString(fmt *Format) string {
 	return s
 }
 
-func (el *Element) String() string {
-	return el.FormattedString(&defaultFormat)
+func OptFormat(fmt *Format) ElementOption {
+	return func(el *Element) {
+		el.fmt = fmt
+	}
 }
