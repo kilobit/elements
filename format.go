@@ -31,17 +31,17 @@ func QuoteString(s string) string {
 	return "\"" + s + "\""
 }
 
-var defaultFormat Format = Format {
-	Close: false,
-	Sep: "",    
-	Prefix: "",
-	CPrefix: "",    
-	TagFmt: IDString,     
-	TagOpen: "<",    
-	TagClose: ">",   
-	EndTagOpen: "</", 
+var defaultFormat Format = Format{
+	Close:       false,
+	Sep:         "",
+	Prefix:      "",
+	CPrefix:     "",
+	TagFmt:      IDString,
+	TagOpen:     "<",
+	TagClose:    ">",
+	EndTagOpen:  "</",
 	EndTagClose: ">",
-	AttrSep:  " ",   
-	AttrKFmt: IDString,   
-	AttrVFmt: QuoteString,    
+	AttrSep:     " ",
+	AttrKFmt:    IDString,
+	AttrVFmt:    QuoteString,
 }

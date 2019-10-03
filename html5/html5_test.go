@@ -33,5 +33,5 @@ func TestElementBuilder(t *testing.T) {
 	t.Log(section)
 
 	els.Expect(t, true, section.HasClass("top"))
-	els.Expect(t, "hr", section.ChildN(1).(*els.Element).Tag())
+	els.Expect(t, "hr", section.ChildN(1).(*HTML5Element).Tag())
 }

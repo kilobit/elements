@@ -5,8 +5,24 @@
 package html5
 
 import els "kilobit.ca/go/elements"
+import "html"
 
 const html5Doctype string = "<!DOCTYPE html>"
+
+var html5Format els.Format = els.Format{
+	Close:       false,
+	Sep:         "",
+	Prefix:      "",
+	CPrefix:     "",
+	TagFmt:      html.EscapeString,
+	TagOpen:     "<",
+	TagClose:    ">",
+	EndTagOpen:  "</",
+	EndTagClose: ">",
+	AttrSep:     " ",
+	AttrKFmt:    html.EscapeString,
+	AttrVFmt:    func(s string) string { return els.QuoteString(html.EscapeString(s)) },
+}
 
 type HTML5Document struct {
 	html *HTMLElement
@@ -25,6 +41,10 @@ func Document(title string, lang string) *HTML5Document {
 
 func (doc *HTML5Document) Doctype() string {
 	return html5Doctype
+}
+
+func (doc *HTML5Document) HTML() *HTMLElement {
+	return doc.html
 }
 
 func (doc *HTML5Document) String() string {
@@ -55,6 +75,10 @@ func HTML(title string, lang string) *HTMLElement {
 	return html
 }
 
+func (el *HTMLElement) String() string {
+	return el.FormattedString(&html5Format)
+}
+
 type HeadElement struct {
 	*els.Element
 	title *els.Element // Title of the document.
@@ -77,6 +101,10 @@ func Head(tstr string) *HeadElement {
 	return head
 }
 
+func (el *HeadElement) String() string {
+	return el.FormattedString(&html5Format)
+}
+
 type BodyElement struct {
 	*els.Element
 }
@@ -88,6 +116,10 @@ func Body() *BodyElement {
 	}
 
 	return body
+}
+
+func (el *BodyElement) String() string {
+	return el.FormattedString(&html5Format)
 }
 
 type AnchorElement struct {
@@ -110,11 +142,29 @@ func (el *AnchorElement) SetHref(href string) *AnchorElement {
 	return el
 }
 
-type elementBuilder func() *els.Element
+func (el *AnchorElement) String() string {
+	return el.FormattedString(&html5Format)
+}
+
+type HTML5Element struct {
+	*els.Element
+}
+
+func NewHTML5Element(tag string) *HTML5Element {
+	return &HTML5Element{
+		els.NewElement(tag),
+	}
+}
+
+func (el *HTML5Element) String() string {
+	return el.FormattedString(&html5Format)
+}
+
+type elementBuilder func() *HTML5Element
 
 func makeElementBuilder(tag string) elementBuilder {
-	return func() *els.Element {
-		return els.NewElement(tag)
+	return func() *HTML5Element {
+		return NewHTML5Element(tag)
 	}
 }
 

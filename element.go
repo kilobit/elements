@@ -12,14 +12,14 @@ type Element struct {
 	tag   string     // Tag name
 	attrs Attributes // Attributes
 	cs    []Node     // Children
-	fmt   Format     // Format
+	fmt   *Format    // Format
 }
 
 func NewElement(tag string) *Element {
 	return &Element{tag,
 		make(Attributes),
 		[]Node{},
-		defaultFormat,
+		&defaultFormat,
 	}
 }
 
@@ -107,7 +107,15 @@ func (el *Element) ChildN(n int) Node {
 	return el.cs[n]
 }
 
-func (el *Element) String() string {
+func (el *Element) SetFormat(fmt *Format) {
+	el.fmt = fmt
+}
+
+func (el *Element) Format() *Format {
+	return el.fmt
+}
+
+func (el *Element) FormattedString(fmt *Format) string {
 
 	sattrs := ""
 	for k, v := range el.attrs {
@@ -128,7 +136,7 @@ func (el *Element) String() string {
 	}
 
 	s += el.fmt.AttrSep
-	
+
 	for _, c := range el.cs {
 		s += el.fmt.CPrefix + c.String() + el.fmt.Sep
 	}
@@ -137,4 +145,8 @@ func (el *Element) String() string {
 		el.fmt.EndTagClose + el.fmt.Sep
 
 	return s
+}
+
+func (el *Element) String() string {
+	return el.FormattedString(&defaultFormat)
 }
