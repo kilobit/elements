@@ -99,11 +99,11 @@ type HeadElement struct {
 func Head(tstr string) *HeadElement {
 
 	title := els.NewElement("title").
-		AddChild(Meta().SetAttr("charset", "utf-8")).
 		AddChild(els.Content(tstr))
 
 	head := &HeadElement{
 		els.NewElement("head").
+			AddChild(Meta().SetAttr("charset", "utf-8")).
 			AddChild(title),
 		title,
 		tstr,
