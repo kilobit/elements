@@ -106,6 +106,14 @@ func (html *HTMLElement) Copy() *HTMLElement {
 	return &HTMLElement{el, head, body}
 }
 
+func (html *HTMLElement) Head() *HeadElement {
+	return html.head
+}
+
+func (html *HTMLElement) Body() *BodyElement {
+	return html.body
+}
+
 type HeadElement struct {
 	*els.Element
 	title *els.Element // Title of the document.
@@ -126,6 +134,10 @@ func Head(tstr string) *HeadElement {
 	}
 
 	return head
+}
+
+func (head *HeadElement) Title() string {
+	return head.tstr
 }
 
 type BodyElement struct {
