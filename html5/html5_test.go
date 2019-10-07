@@ -24,6 +24,18 @@ func TestEmptyDocument(t *testing.T) {
 	els.Expect(t, "Test Document", doc.html.head.tstr)
 }
 
+func TestDocumentCopy(t *testing.T) {
+
+	doc := Document("Test Document", "en")
+
+	copy := doc.Copy()
+
+	t.Logf("%#v", doc)
+	t.Logf("%#v", copy)
+
+	els.Expect(t, "Test Document", doc.html.head.tstr)
+}
+
 func TestElementBuilder(t *testing.T) {
 
 	section := Section().AddClass("top").

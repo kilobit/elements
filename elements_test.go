@@ -29,6 +29,31 @@ func TestElement(t *testing.T) {
 	Expect(t, "bar", attr)
 }
 
+func TestElementCopy(t *testing.T) {
+
+	el := NewElement("tag").
+		AddAttr("tagged").
+		SetAttr("foo", "bar").
+		AddChild(NewElement("nav")).
+		AddChild(NewElement("main")).
+		AddChild(Content("Hello World!"))
+
+	cel := el.Copy()
+
+	t.Logf("%#v", cel)
+	t.Log(cel)
+
+	attr, ok := cel.Attr("tagged")
+	Expect(t, true, ok)
+	Expect(t, "", attr)
+
+	attr, ok = cel.Attr("foo")
+	Expect(t, true, ok)
+	Expect(t, "bar", attr)
+
+	Expect(t, 3, len(el.Children()))
+}
+
 func TestElementNested(t *testing.T) {
 
 	el := NewElement("section").

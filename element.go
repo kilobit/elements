@@ -17,8 +17,9 @@ type Element struct {
 	fmt   *Format    // Format
 }
 
-func NewElement(tag string, opts... ElementOption) *Element {
-	el := &Element{tag,
+func NewElement(tag string, opts ...ElementOption) *Element {
+	el := &Element{
+		tag,
 		make(Attributes),
 		[]Node{},
 		&defaultFormat,
@@ -29,6 +30,33 @@ func NewElement(tag string, opts... ElementOption) *Element {
 	}
 
 	return el
+}
+
+func (el *Element) Copy() *Element {
+
+	attrs := make(Attributes, len(el.attrs))
+	for k, v := range el.attrs {
+		attrs[k] = v
+	}
+
+	cs := make([]Node, len(el.cs))
+	for i, c := range el.cs {
+		switch v := c.(type) {
+		case *Element:
+			cs[i] = v.Copy()
+		default:
+			cs[i] = c
+		}
+	}
+
+	fmt := *el.fmt
+
+	return &Element{
+		el.tag,
+		attrs,
+		cs,
+		&fmt,
+	}
 }
 
 func (el *Element) Tag() string {

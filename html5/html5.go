@@ -54,6 +54,13 @@ func Document(title string, lang string) *HTML5Document {
 	return doc
 }
 
+func (doc *HTML5Document) Copy() *HTML5Document {
+
+	return &HTML5Document{
+		doc.html.Copy(),
+	}
+}
+
 func (doc *HTML5Document) Doctype() string {
 	return html5Doctype
 }
@@ -88,6 +95,15 @@ func HTML(title string, lang string) *HTMLElement {
 	}
 
 	return html
+}
+
+func (html *HTMLElement) Copy() *HTMLElement {
+
+	el := html.Element.Copy()
+	head := el.ChildN(0).(*HeadElement)
+	body := el.ChildN(1).(*BodyElement)
+
+	return &HTMLElement{el, head, body}
 }
 
 type HeadElement struct {
@@ -149,7 +165,7 @@ type HTML5Element struct {
 	*els.Element
 }
 
-func NewHTML5Element(tag string, opts... els.ElementOption) *HTML5Element {
+func NewHTML5Element(tag string, opts ...els.ElementOption) *HTML5Element {
 	return &HTML5Element{
 		els.NewElement(tag, opts...),
 	}
@@ -157,7 +173,7 @@ func NewHTML5Element(tag string, opts... els.ElementOption) *HTML5Element {
 
 type elementBuilder func() *HTML5Element
 
-func makeElementBuilder(tag string, opts... els.ElementOption) elementBuilder {
+func makeElementBuilder(tag string, opts ...els.ElementOption) elementBuilder {
 	return func() *HTML5Element {
 		return NewHTML5Element(tag, opts...)
 	}
