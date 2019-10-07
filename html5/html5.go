@@ -136,6 +136,14 @@ func Head(tstr string) *HeadElement {
 	return head
 }
 
+func (head *HeadElement) Copy() *HeadElement {
+	el := head.Element.Copy()
+	title := el.ChildN(1).(*els.Element)
+	tstr := title.ChildN(0).String()
+
+	return &HeadElement{el, title, tstr}
+}
+
 func (head *HeadElement) Title() string {
 	return head.tstr
 }

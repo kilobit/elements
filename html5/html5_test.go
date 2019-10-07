@@ -36,6 +36,32 @@ func TestDocumentCopy(t *testing.T) {
 	els.Expect(t, "Test Document", doc.html.head.tstr)
 }
 
+func TestHTMLCopy(t *testing.T) {
+
+	html := HTML("Test Document", "en")
+
+	copy := html.Copy()
+
+	t.Logf("%#v", html)
+	t.Logf("%#v", copy)
+
+	els.Expect(t, "Test Document", html.head.tstr)
+}
+
+func TestHTML5ElementCopy(t *testing.T) {
+
+	section := Section().
+		AddChild(P().
+			AddChild(els.Content("Hello World!")))
+
+	copy := section.Copy()
+
+	t.Logf("%#v", section)
+	t.Logf("%#v", copy)
+
+	els.Expect(t, "Hello World!", section.ChildN(0).(*els.Element).ChildN(0).String())
+}
+
 func TestElementBuilder(t *testing.T) {
 
 	section := Section().AddClass("top").
