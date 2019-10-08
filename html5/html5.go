@@ -191,11 +191,14 @@ func NewHTML5Element(tag string, opts ...els.ElementOption) *HTML5Element {
 	}
 }
 
-type elementBuilder func() *HTML5Element
+type elementBuilder func(...els.Node) *HTML5Element
 
 func makeElementBuilder(tag string, opts ...els.ElementOption) elementBuilder {
-	return func() *HTML5Element {
-		return NewHTML5Element(tag, opts...)
+	return func(children ...els.Node) *HTML5Element {
+		hel := NewHTML5Element(tag, opts...)
+		hel.AddChild(children...)
+
+		return hel
 	}
 }
 

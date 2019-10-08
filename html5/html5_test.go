@@ -73,3 +73,17 @@ func TestElementBuilder(t *testing.T) {
 	els.Expect(t, true, section.HasClass("top"))
 	els.Expect(t, "hr", section.ChildN(1).(*HTML5Element).Tag())
 }
+
+func TestHTML5Elements(t *testing.T) {
+
+	section := Section(
+		H1(els.Content("Title")),
+		P(els.Content("Hello World!")),
+		HR(),
+		Footer(P(els.Content("Goodbye"))),
+	)
+
+	t.Log(section)
+
+	els.Expect(t, 4, len(section.Children()))
+}
