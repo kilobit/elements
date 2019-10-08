@@ -76,6 +76,15 @@ func (el *Element) SetAttr(k string, v string) *Element {
 	return el
 }
 
+func (el *Element) SetAttrs(kvs map[string]string) *Element {
+
+	for k, v := range kvs {
+		el.attrs[k] = value(&v)
+	}
+
+	return el
+}
+
 func (el *Element) Attr(k string) (string, bool) {
 	v, ok := el.attrs[k]
 	if v == nil {
