@@ -63,8 +63,11 @@ func (el *Element) Tag() string {
 	return el.tag
 }
 
-func (el *Element) AddAttr(k string) *Element {
-	el.attrs[k] = nil
+func (el *Element) AddAttr(ks ...string) *Element {
+	for _, k := range ks {
+		el.attrs[k] = nil
+	}
+
 	return el
 }
 
@@ -126,8 +129,8 @@ func (el *Element) HasClass(class string) bool {
 	return false
 }
 
-func (el *Element) AddChild(c Node) *Element {
-	el.cs = append(el.cs, c)
+func (el *Element) AddChild(c ...Node) *Element {
+	el.cs = append(el.cs, c...)
 	return el
 }
 
