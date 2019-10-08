@@ -3,9 +3,6 @@
 package elements // import "kilobit.ca/go/elements"
 
 import "strings"
-import "fmt"
-
-type value *string
 
 type ElementOption func(el *Element)
 
@@ -82,8 +79,6 @@ func (el *Element) SetAttrs(kvs map[string]string) *Element {
 	for k, v := range kvs {
 		el.attrs[k] = v
 	}
-
-	fmt.Print(el.attrs)
 
 	return el
 }
