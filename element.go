@@ -3,12 +3,13 @@
 package elements // import "kilobit.ca/go/elements"
 
 import "strings"
+import "fmt"
 
 type value *string
 
 type ElementOption func(el *Element)
 
-type Attributes map[string]value
+type Attributes map[string]string
 
 type Element struct {
 	tag   string     // Tag name
@@ -65,33 +66,30 @@ func (el *Element) Tag() string {
 
 func (el *Element) AddAttr(ks ...string) *Element {
 	for _, k := range ks {
-		el.attrs[k] = nil
+		el.attrs[k] = ""
 	}
 
 	return el
 }
 
 func (el *Element) SetAttr(k string, v string) *Element {
-	el.attrs[k] = value(&v)
+	el.attrs[k] = v
 	return el
 }
 
 func (el *Element) SetAttrs(kvs map[string]string) *Element {
 
 	for k, v := range kvs {
-		el.attrs[k] = value(&v)
+		el.attrs[k] = v
 	}
+
+	fmt.Print(el.attrs)
 
 	return el
 }
 
-func (el *Element) Attr(k string) (string, bool) {
-	v, ok := el.attrs[k]
-	if v == nil {
-		return "", ok
-	}
-
-	return *v, ok
+func (el *Element) Attr(k string) string {
+	return el.attrs[k]
 }
 
 func (el *Element) SetID(id string) *Element {
@@ -100,18 +98,13 @@ func (el *Element) SetID(id string) *Element {
 }
 
 func (el *Element) ID() string {
-	id, ok := el.Attr("id")
-	if !ok {
-		return ""
-	}
-
-	return id
+	return el.Attr("id")
 }
 
 func (el *Element) AddClass(class string) *Element {
 
-	cur, ok := el.Attr("class")
-	if !ok {
+	cur := el.Attr("class")
+	if cur == "" {
 		el.SetAttr("class", class)
 		return el
 	}
@@ -124,8 +117,8 @@ func (el *Element) AddClass(class string) *Element {
 
 func (el *Element) HasClass(class string) bool {
 
-	classes, ok := el.Attr("class")
-	if !ok {
+	classes := el.Attr("class")
+	if classes == "" {
 		return false
 	}
 
@@ -167,11 +160,11 @@ func (el *Element) String() string {
 
 	sattrs := ""
 	for k, v := range el.attrs {
-		if v == nil {
+		if v == "" {
 			sattrs += el.fmt.AttrSep + el.fmt.AttrKFmt(k)
 		} else {
 			sattrs += el.fmt.AttrSep + el.fmt.AttrKFmt(k) + "=" +
-				el.fmt.AttrVFmt(*v)
+				el.fmt.AttrVFmt(v)
 		}
 	}
 

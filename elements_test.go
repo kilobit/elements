@@ -20,12 +20,10 @@ func TestElement(t *testing.T) {
 
 	Expect(t, "tag", el.Tag())
 
-	attr, ok := el.Attr("tagged")
-	Expect(t, true, ok)
+	attr := el.Attr("tagged")
 	Expect(t, "", attr)
 
-	attr, ok = el.Attr("foo")
-	Expect(t, true, ok)
+	attr = el.Attr("foo")
 	Expect(t, "bar", attr)
 }
 
@@ -43,12 +41,10 @@ func TestElementCopy(t *testing.T) {
 	t.Logf("%#v", cel)
 	t.Log(cel)
 
-	attr, ok := cel.Attr("tagged")
-	Expect(t, true, ok)
+	attr := cel.Attr("tagged")
 	Expect(t, "", attr)
 
-	attr, ok = cel.Attr("foo")
-	Expect(t, true, ok)
+	attr = cel.Attr("foo")
 	Expect(t, "bar", attr)
 
 	Expect(t, 3, len(el.Children()))
@@ -76,4 +72,21 @@ func TestElementContent(t *testing.T) {
 
 	Expect(t, c, el.ChildN(0))
 	Expect(t, 1, len(el.Children()))
+}
+
+func TestElementAttrs(t *testing.T) {
+
+	el := NewElement("TAG").
+		SetAttrs(
+			map[string]string{
+				"foo":    "bar",
+				"bing":   "bang!",
+				"cheery": "oh",
+			})
+
+	t.Log(el)
+
+	Expect(t, "bar", el.Attr("foo"))
+	Expect(t, "bang!", el.Attr("bing"))
+	Expect(t, "oh", el.Attr("cheery"))
 }
